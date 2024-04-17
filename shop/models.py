@@ -58,7 +58,7 @@ class Product(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
 
-    
+   
     def __str__(self):
 
         return self.title
@@ -76,6 +76,25 @@ class Basket(models.Model):
     def __str__(self):
 
         return self.owner.username
+    
+
+    @property
+    def basketitems(self):
+
+        return self.cartitems.filter(is_order_placed=False)
+    
+
+    @property
+    def basket_total(self):
+
+        basket_item_list=self.basketitems
+        total=0
+
+        if basket_item_list:
+
+            total=sum([bi.item_total for bi in basket_item_list])
+
+        return total
 
 
 
@@ -130,8 +149,24 @@ class Order(models.Model):
 
 
 
+    @property
+    def order_total(self):
+
+        basket_items=self.basket_item_objects.all()
+
+        return sum([bi.item_total for bi in basket_items]) if basket_items else 0
+
+
+
+
+
+
+
 def create_basket(sender,instance,created,**kwargs):
     if created:
         Basket.objects.create(owner=instance)
 
 post_save.connect(sender=User,receiver=create_basket)
+
+
+    

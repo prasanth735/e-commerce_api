@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 
-from shop.models import Product,Category,Brand,Size
+from shop.models import Product,Category,Brand,Size,BasketItem,Basket
 
 from rest_framework import serializers
 
@@ -76,3 +76,57 @@ class ProductSerializer(serializers.ModelSerializer):
 
         model=Product
         fields="__all__"
+
+
+
+
+
+class CartProductSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model=Product
+        fields=["id","title","price","image"]
+
+
+
+
+
+
+class BasketItemSerializer(serializers.ModelSerializer):
+
+    item_total=serializers.CharField(read_only=True)
+    product_object=CartProductSerializer(read_only=True) 
+    size_object=serializers.StringRelatedField()
+
+    class Meta:
+
+        model=BasketItem
+        fields=[
+            "id",
+            "product_object",
+            "size_object",
+            "quantity",
+            "created_date",
+            "item_total"
+
+        ]
+
+
+
+class BasketSerializer(serializers.ModelSerializer):
+
+    basketitems=BasketItemSerializer(many=True)
+    basket_total=serializers.CharField()
+
+    owner=serializers.StringRelatedField()
+
+    class Meta:
+
+        model=Basket
+        fields=[
+            "id",
+            "owner",
+            "basketitems",
+            "basket_total"
+        ]

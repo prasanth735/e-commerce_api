@@ -27,5 +27,8 @@ urlpatterns = [
     path("api/v1/token/",ObtainAuthToken.as_view()),
     path("api/v1/products/",views.ProductListView.as_view()),
     path("api/v1/products/<int:pk>/",views.ProductDetailView.as_view()),
-    path("api/v1/products/<int:pk>/addtocart/",views.AddtoCarView.as_view())
+    path("api/v1/products/<int:pk>/addtocart/",views.AddtoCarView.as_view()),
+    path("api/v1/carts/",views.CartListView.as_view()),
+    path("api/v1/carts/<int:pk>/",views.CartitemUpdateView.as_view()),
+    path("api/v1/order/",views.CheckoutView.as_view())
 ]
